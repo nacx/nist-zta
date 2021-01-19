@@ -2,16 +2,17 @@
 -include .makerc
 
 .PHONY: deploy
-deploy:
-	$(MAKE) -C signer-ca deploy-e2e
-	$(MAKE) deploy-istio
-	$(MAKE) deploy-apps
+deploy: deploy-ca deploy-istio deploy-apps
 
 .PHONY: deploy-apps
 deploy-apps:
 	kubectl label namespace default istio-injection=enabled
 	kubectl apply -n default -f apps/
 	kubectl apply -f mtls.yaml
+
+.PHONY: deploy-ca
+deploy-ca:
+	$(MAKE) -C signer-ca docker-build docker-push deploy-e2e
 
 .PHONY: deploy-istio
 deploy-istio:
