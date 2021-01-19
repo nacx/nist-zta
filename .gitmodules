@@ -1,0 +1,3 @@
+[submodule "signer-ca"]
+	path = signer-ca
+	url = git@github.com:nacx/signer-ca.git

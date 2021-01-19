@@ -1,0 +1,161 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: frontend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  ports:
+  - port: 80
+    name: http
+    targetPort: 8000
+  selector:
+    app: frontend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      serviceAccountName: frontend
+      containers:
+      - name: app
+        image: gcr.io/ignasi-permanent-ffxxqcd8/nexthop:latest
+        imagePullPolicy: IfNotPresent
+        args:
+        - -next-hop=http://backend
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: backend
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  ports:
+  - port: 80
+    name: http
+    targetPort: 8000
+  selector:
+    app: backend
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      serviceAccountName: backend
+      containers:
+      - name: app
+        image: gcr.io/ignasi-permanent-ffxxqcd8/nexthop:latest
+        imagePullPolicy: IfNotPresent
+        args:
+        - -next-hop=http://datastore
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: datastore
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: datastore
+  labels:
+    app: datastore
+spec:
+  ports:
+  - port: 80
+    name: http
+    targetPort: 8000
+  selector:
+    app: datastore
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: datastore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: datastore
+  template:
+    metadata:
+      labels:
+        app: datastore
+    spec:
+      serviceAccountName: datastore
+      containers:
+      - name: app
+        image: gcr.io/ignasi-permanent-ffxxqcd8/nexthop:latest
+        imagePullPolicy: IfNotPresent
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nonmesh
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nonmesh
+  labels:
+    app: nonmesh
+spec:
+  ports:
+  - port: 80
+    name: http
+    targetPort: 8000
+  selector:
+    app: nonmesh
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nonmesh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nonmesh
+  template:
+    metadata:
+      labels:
+        app: nonmesh
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      serviceAccountName: nonmesh
+      containers:
+      - name: app
+        image: gcr.io/ignasi-permanent-ffxxqcd8/nexthop:latest
+        imagePullPolicy: IfNotPresent
