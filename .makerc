@@ -1,2 +1,3 @@
 export DOCKER_PREFIX=${HUB}/cert-manager/signer-ca-
+export DOCKER_TAG=demo
 export E2E_PKI=config/tetrate
