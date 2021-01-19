@@ -24,7 +24,7 @@ uninstall:
 	kubectl delete -f apps/ --ignore-not-found
 	kubectl label namespace default istio-injection-
 	kubectl delete -f mtls.yaml --ignore-not-found
-	kubectl delete -f authz-datastore.yaml --ignore-not-found
+	kubectl delete -f authz.yaml --ignore-not-found
 	kustomize build signer-ca/${E2E_PKI} | kubectl delete --ignore-not-found -f -
 	istioctl x uninstall --purge -y
 	kubectl delete namespace istio-system --ignore-not-found
