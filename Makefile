@@ -9,6 +9,7 @@ deploy:
 
 .PHONY: deploy-apps
 deploy-apps:
+	kubectl label namespace default istio-injection=enabled
 	kubectl apply -n default -f apps/
 	kubectl apply -f mtls.yaml
 
@@ -21,6 +22,7 @@ deploy-istio:
 .PHONY: uninstall
 uninstall:
 	kubectl delete -f apps/ --ignore-not-found
+	kubectl label namespace default istio-injection-
 	kubectl delete -f mtls.yaml --ignore-not-found
 	kubectl delete -f authz-datastore.yaml --ignore-not-found
 	kustomize build signer-ca/${E2E_PKI} | kubectl delete --ignore-not-found -f -
